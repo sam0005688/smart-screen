@@ -8,7 +8,7 @@ cascPath = "haarcascade_frontalface_default.xml"
 faceCascade = cv2.CascadeClassifier(cascPath)
 log.basicConfig(filename='webcam.log',level=log.INFO)
 
-video_capture = cv2.VideoCapture(0)
+video_capture = cv2.VideoCapture(1)
 anterior = 0
 
 while True:
@@ -31,8 +31,9 @@ while True:
 
     # Draw a rectangle around the faces
     for (x, y, w, h) in faces:
+        print(x,y)
         cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
-
+        sleep(1)
     if anterior != len(faces):
         anterior = len(faces)
         log.info("faces: "+str(len(faces))+" at "+str(dt.datetime.now()))
