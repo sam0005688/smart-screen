@@ -3,14 +3,14 @@ import sys
 import logging as log
 import datetime as dt
 from time import sleep
-
+import serial
 cascPath = "haarcascade_frontalface_default.xml"
 faceCascade = cv2.CascadeClassifier(cascPath)
 log.basicConfig(filename='webcam.log',level=log.INFO)
 
 video_capture = cv2.VideoCapture(1)
 anterior = 0
-
+#ser =serial.Serial("COM3", 9600, timeout=2) # Establish the connection on a specific port
 while True:
     if not video_capture.isOpened():
         print('Unable to load camera.')
@@ -31,9 +31,10 @@ while True:
 
     # Draw a rectangle around the faces
     for (x, y, w, h) in faces:
-        print(x,y)
+        print(x+w/2,y+h/2)
+       # ser.write(str(x)+str(y))
         cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
-        sleep(1)
+        #sleep(1)
     if anterior != len(faces):
         anterior = len(faces)
         log.info("faces: "+str(len(faces))+" at "+str(dt.datetime.now()))
@@ -51,4 +52,5 @@ while True:
 
 # When everything is done, release the capture
 video_capture.release()
+#ser.close()
 cv2.destroyAllWindows()
