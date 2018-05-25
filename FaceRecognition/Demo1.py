@@ -1,6 +1,5 @@
 import cv2
 import sys
-import datetime as dt
 from time import sleep
 import serial
 
