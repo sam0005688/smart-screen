@@ -8,9 +8,9 @@ cascPath = "haarcascade_frontalface_default.xml"
 faceCascade = cv2.CascadeClassifier(cascPath)
 log.basicConfig(filename='webcam.log',level=log.INFO)
 
-video_capture = cv2.VideoCapture(1)
+video_capture = cv2.VideoCapture(0)
 anterior = 0
-#ser =serial.Serial("COM3", 9600, timeout=2) # Establish the connection on a specific port
+#ser = serial.Serial("COM3", 9600, timeout=2) # Establish the connection on a specific port
 while True:
     if not video_capture.isOpened():
         print('Unable to load camera.')
@@ -19,6 +19,8 @@ while True:
 
     # Capture frame-by-frame
     ret, frame = video_capture.read()
+
+    frame = cv2.flip(frame, 1)
 
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
@@ -30,8 +32,9 @@ while True:
     )
 
     # Draw a rectangle around the faces
-    for (x, y, w, h) in faces:
-        print(x+w/2,y+h/2)
+    if len(faces) == 1:
+        x, y, w, h = faces[0][0], faces[0][1], faces[0][2], faces[0][3]
+        print(x+w/2-320,y+h/2-240)
        # ser.write(str(x)+str(y))
         cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
         #sleep(1)
