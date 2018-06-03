@@ -12,10 +12,14 @@ void setup()
 
 void loop()
 {
-  motorA = servoMove(servoA, 30, motorA);
-  Serial.println(motorA);
-  delay(5000);
+ 
+  if (Serial.available())
+  {
+    int angle = Serial.read()*0.5+90-motorA;
+    motorA = servoMove(servoA, angle, motorA);
+  }
   if (motorA > 180)
     motorA = 0;
+   delay(500);
 }
 
