@@ -1,4 +1,3 @@
-#define COLLISIONDISTANCE 15
 #include <Servo.h>
 
 class Ultrasonic {
@@ -34,7 +33,8 @@ class Ultrasonic {
 
 
 Servo servoRot, servoUD, servoFB;
-int servoRotA = 70, servoUDA = 70, servoFBA = 70;
+Ultrasonic ult;
+int servoRotA = 70, servoUDA = 50, servoFBA = 90;
 
 void setup()
 {
@@ -43,6 +43,7 @@ void setup()
   servoRot.attach(10);
   servoUD.attach(11);
   servoFB.attach(12);
+  ult.init(8, 9);
 }
 
 void loop()
@@ -54,17 +55,30 @@ void loop()
     while(Serial.available() > 0)
       Serial.read();
     if (cmd == 'r')
-    {
       servoRotA += 1;
-    }
     if (cmd == 'l')
-    {
       servoRotA -= 1;
-    }
+    if (cmd == 'u')
+      servoUDA += 1;
+    if (cmd == 'd')
+      servoUDA -= 1;
   }
   else
     digitalWrite(13, LOW);
+
+  if (servoFBA < 110)
+  {
+    if (ult.distanceCM() < 30)
+      servoFBA += 1;
+  }
+  if (servoFBA > 50)
+  {
+    if (ult.distanceCM() > 50)
+      servoFBA -= 1;
+  }
+    
   servoRot.write(servoRotA);
   servoUD.write(servoUDA);
   servoFB.write(servoFBA);
+
 }
