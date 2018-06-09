@@ -33,40 +33,38 @@ class Ultrasonic {
 };
 
 
-Servo servoA;
-int motorA = 0;
+Servo servoRot, servoUD, servoFB;
+int servoRotA = 70, servoUDA = 70, servoFBA = 70;
 
 void setup()
 {
   Serial.begin(9600);
-  servoA.attach(10);
+  pinMode(13, INPUT);
+  servoRot.attach(10);
+  servoUD.attach(11);
+  servoFB.attach(12);
 }
 
 void loop()
 {
- 
   if (Serial.available())
   {
-    int angle = Serial.read()*0.5+90-motorA;
-    motorA = servoMove(servoA, angle, motorA);
+    digitalWrite(13, HIGH);
+    char cmd = Serial.read();
+    while(Serial.available() > 0)
+      Serial.read();
+    if (cmd == 'r')
+    {
+      servoRotA += 1;
+    }
+    if (cmd == 'l')
+    {
+      servoRotA -= 1;
+    }
   }
-  if (motorA > 180)
-    motorA = 0;
-   delay(500);
-}
-
-int servoMove(Servo servo, int angle, int angleNow)
-{
-  Ultrasonic ult;
-  ult.init(12, 11);
-  int i;
-  for(i = 0;i< angle;i++)
-  {
-    delay(10);
-    servo.write(angleNow + i);
-    Serial.println(ult.distanceCM());
-    if (ult.distanceCM() < COLLISIONDISTANCE)
-      break;
-  }
-  return angleNow + i;
+  else
+    digitalWrite(13, LOW);
+  servoRot.write(servoRotA);
+  servoUD.write(servoUDA);
+  servoFB.write(servoFBA);
 }

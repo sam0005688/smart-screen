@@ -8,7 +8,7 @@ faceCascade = cv2.CascadeClassifier(cascPath)
 
 video_capture = cv2.VideoCapture(0)
 anterior = 0
-ser = serial.Serial("COM3", 9600, timeout=2) # Establish the connection on a specific port
+ser = serial.Serial("COM5", 9600, timeout=2) # Establish the connection on a specific port
 
 dataCount, data = 0, 0
 
@@ -35,15 +35,11 @@ while True:
     # Draw a rectangle around the faces
     if len(faces) == 1:
         x, y, w, h = faces[0][0], faces[0][1], faces[0][2], faces[0][3]
-        # print(x+w/2-320,y+h/2-240)
-        if dataCount == 30:
-            ser.write(data/30)
-            print(data/30)
-            dataCount = 0
-            data = 0
-        else:
-            data += x+w/2-320
-            dataCount += 1
+        print(x+w/2-320, -(y+h/2-240))
+        if x+w/2-320 > 60:
+            ser.write(bytes('r', encoding = 'utf8'))
+        if x+w/2-320 < -60:
+            ser.write(bytes('l', encoding = 'utf8'))
         cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
 
     # Display the resulting frame
